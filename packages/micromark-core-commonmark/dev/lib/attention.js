@@ -248,14 +248,21 @@ function tokenizeAttention(effects, ok) {
     // Always populated by defaults.
     assert(attentionMarkers, 'expected `attentionMarkers` to be populated')
 
+    // Note: `*` and `_` are in `attentionMarkers` through core.
+    // They are excluded here as the loosening is meant for markers registered
+    // by *other* constructs (such as GFM strikethrough’s `~`).
     const open =
       !after ||
       (after === constants.characterGroupPunctuation && before) ||
-      attentionMarkers.includes(code)
+      (attentionMarkers.includes(code) &&
+        code !== codes.asterisk &&
+        code !== codes.underscore)
     const close =
       !before ||
       (before === constants.characterGroupPunctuation && after) ||
-      attentionMarkers.includes(previous)
+      (attentionMarkers.includes(previous) &&
+        previous !== codes.asterisk &&
+        previous !== codes.underscore)
 
     token._open = Boolean(
       marker === codes.asterisk ? open : open && (before || !close)
