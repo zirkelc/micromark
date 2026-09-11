@@ -82,19 +82,5 @@
   },
   "scripts": {
     "build": "micromark-build"
-  },
-  "xo": {
-    "envs": [
-      "shared-node-browser"
-    ],
-    "prettier": true,
-    "rules": {
-      "logical-assignment-operators": "off",
-      "max-depth": "off",
-      "unicorn/no-this-assignment": "off",
-      "unicorn/prefer-at": "off",
-      "unicorn/prefer-code-point": "off",
-      "unicorn/prefer-event-target": "off"
-    }
   }
 }

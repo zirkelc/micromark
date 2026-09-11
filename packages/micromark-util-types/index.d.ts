@@ -769,7 +769,6 @@ export type Encoding =
   | 'utf-16le' // Always supported in Node.
   | 'utf-16be' // Not supported when ICU is disabled.
   // Everything else (depends on browser, or full ICU data).
-  // eslint-disable-next-line @typescript-eslint/ban-types
   | (string & {})
 
 /**
@@ -792,8 +791,7 @@ export interface Extension {
   flowInitial?: ConstructRecord | undefined
   flow?: ConstructRecord | undefined
   insideSpan?:
-    | {null?: Array<Pick<Construct, 'resolveAll'>> | undefined}
-    | undefined
+    {null?: Array<Pick<Construct, 'resolveAll'>> | undefined} | undefined
   string?: ConstructRecord | undefined
   text?: ConstructRecord | undefined
 }

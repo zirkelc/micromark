@@ -69,8 +69,6 @@ function resolveAllLabelEnd(events) {
 function resolveToLabelEnd(events, context) {
   let index = events.length
   let offset = 0
-  /** @type {Token} */
-  let token
   /** @type {number | undefined} */
   let open
   /** @type {number | undefined} */
@@ -80,7 +78,7 @@ function resolveToLabelEnd(events, context) {
 
   // Find an opening.
   while (index--) {
-    token = events[index][1]
+    const token = events[index][1]
 
     if (open) {
       // If we see another link, or inactive link label, we’ve been here before.

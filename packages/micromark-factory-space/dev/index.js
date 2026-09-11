@@ -39,7 +39,7 @@ import {markdownSpace} from 'micromark-util-character'
  *   Start state.
  */
 export function factorySpace(effects, ok, type, max) {
-  const limit = max ? max - 1 : Number.POSITIVE_INFINITY
+  const limit = max ? max - 1 : Infinity
   let size = 0
 
   return start

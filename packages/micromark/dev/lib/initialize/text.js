@@ -180,7 +180,10 @@ function resolveAllLineSuffixes(events, context) {
             bufferIndex--
           }
 
-          if (bufferIndex) break
+          if (bufferIndex) {
+            break
+          }
+
           bufferIndex = -1
         }
         // Number

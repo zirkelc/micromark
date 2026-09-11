@@ -188,7 +188,10 @@ function initializeDocument(effects) {
 
   /** @type {State} */
   function thereIsANewContainer(code) {
-    if (childFlow) closeFlow()
+    if (childFlow) {
+      closeFlow()
+    }
+
     exitContainers(continued)
     return documentContinued(code)
   }
@@ -230,7 +233,10 @@ function initializeDocument(effects) {
   /** @type {State} */
   function flowStart(code) {
     if (code === codes.eof) {
-      if (childFlow) closeFlow()
+      if (childFlow) {
+        closeFlow()
+      }
+
       exitContainers(0)
       effects.consume(code)
       return
@@ -279,9 +285,15 @@ function initializeDocument(effects) {
   function writeToChild(token, endOfFile) {
     assert(childFlow, 'expected `childFlow` to be defined when continuing')
     const stream = self.sliceStream(token)
-    if (endOfFile) stream.push(null)
+    if (endOfFile) {
+      stream.push(null)
+    }
+
     token.previous = childToken
-    if (childToken) childToken.next = token
+    if (childToken) {
+      childToken.next = token
+    }
+
     childToken = token
     childFlow.defineSkip(token.start)
     childFlow.write(stream)
