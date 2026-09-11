@@ -644,6 +644,11 @@ export interface TokenizeContext {
   _contentTypeTextTrailing?: boolean | undefined
 
   /**
+   * Stack of label start tokens that can still close.
+   */
+  _labelStarts?: Array<Token> | undefined
+
+  /**
    * Current code.
    */
   code: Code

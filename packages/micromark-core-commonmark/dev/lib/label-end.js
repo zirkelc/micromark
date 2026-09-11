@@ -185,22 +185,23 @@ function resolveToLabelEnd(events, context) {
  */
 function tokenizeLabelEnd(effects, ok, nok) {
   const self = this
-  let index = self.events.length
+  const labelStarts = self._labelStarts
   /** @type {Token} */
   let labelStart
   /** @type {boolean} */
   let defined
 
-  // Find an opening.
-  while (index--) {
-    if (
-      (self.events[index][1].type === types.labelImage ||
-        self.events[index][1].type === types.labelLink) &&
-      !self.events[index][1]._balanced
+  if (labelStarts) {
+    // Discard ones that failed to close,
+    // they’re not needed anymore.
+    while (
+      labelStarts.length > 0 &&
+      labelStarts[labelStarts.length - 1]._balanced
     ) {
-      labelStart = self.events[index][1]
-      break
+      labelStarts.pop()
     }
+
+    labelStart = labelStarts[labelStarts.length - 1]
   }
 
   return start
@@ -336,6 +337,9 @@ function tokenizeLabelEnd(effects, ok, nok) {
    */
   function labelEndOk(code) {
     // Note: `markdown-rs` does a bunch of stuff here.
+    // This label start is now used up: discard it so it’s never found again.
+    assert(labelStarts, 'expected `labelStarts` to be populated')
+    labelStarts.pop()
     return ok(code)
   }
 
