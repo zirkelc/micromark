@@ -20,7 +20,7 @@
 import {ok as assert} from 'devlop'
 import {factorySpace} from 'micromark-factory-space'
 import {markdownLineEnding} from 'micromark-util-character'
-import {splice} from 'micromark-util-chunked'
+import {EditMap} from 'micromark-util-edit-map'
 import {codes, constants, types} from 'micromark-util-symbol'
 
 /** @type {InitialConstruct} */
@@ -128,16 +128,12 @@ function initializeDocument(effects) {
         index++
       }
 
+      const editMap = new EditMap()
       // Inject the exits earlier (they’re still also at the end).
-      splice(
-        self.events,
-        indexBeforeFlow + 1,
-        0,
-        self.events.slice(indexBeforeExits)
-      )
-
+      editMap.add(indexBeforeFlow + 1, 0, self.events.slice(indexBeforeExits))
       // Discard the duplicate exits.
-      self.events.length = index
+      editMap.add(indexBeforeExits, index - indexBeforeExits, [])
+      editMap.consume(self.events)
 
       return checkNewContainers(code)
     }
@@ -385,16 +381,12 @@ function initializeDocument(effects) {
         index++
       }
 
+      const editMap = new EditMap()
       // Inject the exits earlier (they’re still also at the end).
-      splice(
-        self.events,
-        indexBeforeFlow + 1,
-        0,
-        self.events.slice(indexBeforeExits)
-      )
-
+      editMap.add(indexBeforeFlow + 1, 0, self.events.slice(indexBeforeExits))
       // Discard the duplicate exits.
-      self.events.length = index
+      editMap.add(indexBeforeExits, index - indexBeforeExits, [])
+      editMap.consume(self.events)
     }
   }
 
