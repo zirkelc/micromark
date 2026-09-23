@@ -1,0 +1,10 @@
+commit	delta1	delta2	status	description
+d59afaf	-2.44% / -2.21%	-2.71% / -2.52%	keep	subtokenize: jumps as Map filled by subcontent (no Object.assign on integer-keyed object, no `in`). gzip -9 B, brotli +3 B. First run on busy machine (probe 5%) discarded.
+c9f2bdb	-2.87% / -2.95%	-2.54% / -2.94%	keep	chunked splice: small path spreads items directly (no Array.from + unshift). spec-tokens -7.6/-7.9 (confirmed band). gzip -4 B, brotli +4 B, min -21 B. One lint fix (prefer-smaller-scope).
+0bf5a27	-0.63% / -0.65%	-0.15% / -0.36%	discard	subtokenize: skip final write-back when a pass made no edits. Under 1.5% bar. gzip +13 B, brotli -12 B.
+9a591db	-0.94% / -0.99%	-0.80% / -0.94%	near-miss	handleMapOfConstructs reuses map[code] when map.null is empty (no per-attempt array + spreads). Above half bar in both runs. gzip +5 B, brotli -18 B.
+0a2f93d	-0.10% / -0.29% (INVALID: probe 6.9%)	-0.74% / -0.85%	discard	chunked push: native Array#push with spread for < 10k items (no splice + removed-array alloc). Needed a new test (push > 10k) for c8 --100. Under bar; cost of test weighed against it. gzip +7 B.
+ac0bd52	-1.39% / -1.58%	-1.53% / -1.64%	keep	compile: {...context, sliceSerialize} instead of {sliceSerialize, ...context} (V8 clone fast path when spread is first). Only HTML cases move (-1..-4%), token/mdast flat. Only observable diff: key order of this in handlers. gzip 0, brotli -9 B.
+3777766	-0.81% / -0.88%	-0.59% / -0.60%	discard	bundle: near miss 9a591db (reuse map[code]) + restore() pops events instead of setting length. Pop loop adds nothing; bundle below exp 4 alone. gzip +13 B.
+dc09b49	-0.48% / -0.01%	+0.06% / +0.10%	discard	compile: prepareList(events, start, end) instead of a slice per list. Neutral; only -2 B gzip, not worth a PR.
+7e32b56	+3.91% / +3.83%	+3.37% / +3.65%	discard	subtokenize: jumps as pre-sized array (Array.from({length})) instead of Map. Regression: O(n) allocation per subtokenize call outweighs the faster lookup. gzip +24 B.
