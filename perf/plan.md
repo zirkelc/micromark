@@ -212,3 +212,57 @@ Left worth trying: attention openers-bottom bound (decision item), the per-event
 (decision item), a sorted-queue for subtokenize jumps (needs an ordering invariant), caching
 `combineExtensions(defaultConstructs)` for extension-less parses (helps `micromark()` without
 extensions, not nebula).
+
+## Continuation (experiments 10 to 16, budget extended by the user)
+
+10. **store() copies the stack with `slice`** (discard, neutral: V8 already fast-paths
+    `Array.from` on packed arrays).
+11. **resolveAllText merges data in one pass** (keep, asymptotic). Suite neutral (text blocks in
+    the suite are short), but one long paragraph with many data breaks goes 278 → 51 ms (5.2x), and
+    `test/perf.js` "unclosed links" 80 → 34 ms, "unclosed links (2)" 80 → 25 ms. Same pattern as
+    merged #185. gzip +8 B.
+12. **attention resolver on a SpliceBuffer** (discard): linear on long paragraphs, but `get()` on
+    the walk-back made normal docs 4 to 5% slower.
+13. **parse() without extensions copies pre-normalized defaults** (keep). Combining the default
+    constructs walks ~40 integer-keyed maps with `for...in` on every parse. Entries are now
+    normalized once at module load and copied into fresh objects. spec-html -15%, spec-tokens -18%
+    (confirmed bands); larger docs flat (it is a fixed per-parse cost). **gzip +87 B.**
+14. **compile() uses default handlers directly without extensions** (near miss: spec-html -4.9/-4.6
+    but band straddles 0 in both runs).
+15. **attention resolver splices in a working array** (keep, asymptotic). Walked events move into
+    `left`, matches splice near its end, the unwalked tail never shifts; plain array reads. Suite
+    neutral (within floor). 16k emphasis pairs 760 → 100 ms (7.5x). **gzip +47 B.**
+16. **code-text resolver merges in one pass** (keep, asymptotic). Code span with 32k lines
+    537 → 90 ms (6x). gzip +19 B.
+
+"Keep (asymptotic)" means: suite neutral within the noise floor, large effect on a targeted input
+measured standalone in two runs (far above cross-run drift), output identical on targeted long
+inputs (HTML, GFM HTML, token events). The suite was not changed to show these effects.
+
+Scaling scan after experiment 16 (time for 4x input): all in-repo shapes 3.3x to 5.2x (linear).
+Remaining superlinear: GFM strikethrough 7.8x (other repo), and the attention walk-back on
+`a**b` x n (openers-bottom decision item).
+
+### Final numbers (1a5384a vs b9bef83, two runs)
+
+| case | run 1 | run 2 |
+|---|---|---|
+| spec-html | -19.56% | -21.05% |
+| spec-tokens | -21.65% | -22.24% |
+| readme-html | -6.14% | -7.60% |
+| pathological-html | -6.64% | -8.60% |
+| chat-mdast-gfm (nebula) | -4.09% | -4.05% |
+| chat-tokens-gfm | -4.20% | -4.26% |
+| chat-html-gfm | -5.80% | -6.80% |
+| chat-html-commonmark | -6.40% | -6.82% |
+| stream-mdast-gfm (nebula) | -3.76% | -2.94% |
+| **TOTAL** | **-7.04%** | **-7.50%** |
+| **GEOMEAN** | **-8.94%** | **-9.64%** |
+
+`test/perf.js` workloads, warm (min of 5 after warm-up), two rounds, pre-loop → final: unclosed
+links 83/80 → 34/34 ms, unclosed links (2) 79/80 → 24/26 ms, tons of definitions 124/130 →
+103/105 ms, strong 299/301 → 293/293 ms, strong/emphasis? 282/306 → 283/294 ms (flat), base flat.
+
+Size `micromark.min.js`: min 52,872 → 53,267 (+395 B), gzip 14,687 → 14,835 (+148 B, +1.0%),
+brotli 13,125 → 13,277 (+152 B). By change: exp 13 +87, exp 15 +47, exp 16 +19, exp 11 +8;
+exps 1, 2, 6 together -13.
