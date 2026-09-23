@@ -8,3 +8,4 @@ ac0bd52	-1.39% / -1.58%	-1.53% / -1.64%	keep	compile: {...context, sliceSerializ
 3777766	-0.81% / -0.88%	-0.59% / -0.60%	discard	bundle: near miss 9a591db (reuse map[code]) + restore() pops events instead of setting length. Pop loop adds nothing; bundle below exp 4 alone. gzip +13 B.
 dc09b49	-0.48% / -0.01%	+0.06% / +0.10%	discard	compile: prepareList(events, start, end) instead of a slice per list. Neutral; only -2 B gzip, not worth a PR.
 7e32b56	+3.91% / +3.83%	+3.37% / +3.65%	discard	subtokenize: jumps as pre-sized array (Array.from({length})) instead of Map. Regression: O(n) allocation per subtokenize call outweighs the faster lookup. gzip +24 B.
+61255e5	-0.10% / -0.07%	-0.12% / -0.16%	discard	store(): stack.slice() instead of Array.from(stack). Neutral: V8 fast-paths Array.from on packed arrays. gzip -2 B.
