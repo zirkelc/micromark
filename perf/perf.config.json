@@ -1,0 +1,5 @@
+{
+  "entry": "perf-entry.mjs",
+  "src": ["packages"],
+  "cases": "perf/cases.mts"
+}

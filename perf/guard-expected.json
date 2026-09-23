@@ -1,0 +1,38 @@
+{
+  "spec-html": {
+    "hash": "c0fb2044",
+    "bytes": 31656
+  },
+  "spec-tokens": {
+    "hash": "37973055",
+    "bytes": 377017
+  },
+  "readme-html": {
+    "hash": "9a150962",
+    "bytes": 69756
+  },
+  "pathological-html": {
+    "hash": "726e2603",
+    "bytes": 34058
+  },
+  "chat-mdast-gfm": {
+    "hash": "169b1b21",
+    "bytes": 1187973
+  },
+  "chat-tokens-gfm": {
+    "hash": "d38ddf6f",
+    "bytes": 1030775
+  },
+  "chat-html-gfm": {
+    "hash": "41fa83d4",
+    "bytes": 125917
+  },
+  "chat-html-commonmark": {
+    "hash": "b6734872",
+    "bytes": 101673
+  },
+  "stream-mdast-gfm": {
+    "hash": "9c00a7a3",
+    "bytes": 1683947
+  }
+}

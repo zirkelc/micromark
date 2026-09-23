@@ -6,6 +6,7 @@ import globals from 'globals'
 
 /** @type {FlatXoConfig} */
 const xoConfig = [
+  {ignores: ['perf/']},
   {
     languageOptions: {globals: {...globals.node, ...globals.browser}},
     prettier: 'compat',
