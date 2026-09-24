@@ -9,6 +9,9 @@ jobs:
           node-version: node
       - run: npm install
       - run: npm run build
+      # The linter pulls in `@types/katex`, which needs DOM types.
+      # TypeScript in the packages below would load it from here.
+      - run: npx rimraf node_modules/@types/katex
       - uses: actions/checkout@v6
         with:
           path: canary/${{matrix.package}}
