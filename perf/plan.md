@@ -45,12 +45,12 @@ Adaptations in `perf/harness.mts`:
   real copies of `micromark-extension-gfm*`, `mdast-util-from-markdown`, `mdast-util-gfm*`, so
   every micromark import resolves inside the tree (verified with `import.meta.resolve`).
 - Each tree is built with `micromark-build` in workspace order; the harness measures the
-  **production build**, which is what users (nebula) load.
+  **production build**, which is what users load by default.
 - `.prettierignore`, `.remarkignore`, `xo.config.js` ignore `perf/` (harness commit only, not in PRs).
 
 Cases (`perf/cases.mts`), bodies 17 to 63 ms: `spec-html`, `spec-tokens` (652 CommonMark
 examples), `readme-html`, `pathological-html` (test/perf.js inputs at 1e3), `chat-mdast-gfm`
-(nebula path: fromMarkdown + gfm over 30 seeded chat docs), `chat-tokens-gfm`, `chat-html-gfm`,
+(chat app path: fromMarkdown + gfm over 30 seeded chat docs), `chat-tokens-gfm`, `chat-html-gfm`,
 `chat-html-commonmark`, `stream-mdast-gfm` (45 growing prefixes of one 5 kB doc). No GFM test
 suite exists under `test/`; GFM coverage comes from the seeded chat documents.
 
@@ -184,15 +184,15 @@ Cumulative A/B, `1a5384a` (pre-loop) vs `ac0bd52`, two runs, probe 1.0% / 0.7%:
 | spec-tokens | -5.73% | -7.53% |
 | readme-html | -8.51% | -7.61% |
 | pathological-html | -7.40% | -6.65% |
-| chat-mdast-gfm (nebula) | -4.24% | -4.06% |
+| chat-mdast-gfm (chat app) | -4.24% | -4.06% |
 | chat-tokens-gfm | -5.10% | -4.88% |
 | chat-html-gfm | -7.14% | -6.70% |
 | chat-html-commonmark | -7.97% | -6.89% |
-| stream-mdast-gfm (nebula streaming) | -4.09% | -4.80% |
+| stream-mdast-gfm (chat app, streaming) | -4.09% | -4.80% |
 | **TOTAL** | **-5.94%** | **-5.95%** |
 | **GEOMEAN** | **-6.30%** | **-6.38%** |
 
-Speed-up about 1.06x total. The nebula path gains less (-4%) because ~30% of its time is in
+Speed-up about 1.06x total. The chat app path gains less (-4%) because ~30% of its time is in
 `mdast-util-from-markdown` and the GFM extensions, outside this repo.
 
 Size (`micromark.min.js`): min 52,872 → 52,843 (-29 B), gzip 14,687 → 14,674 (-13 B), brotli
@@ -211,7 +211,7 @@ recalibration, and every keep was confirmed with the stricter settings.
 Left worth trying: attention openers-bottom bound (decision item), the per-event compile context
 (decision item), a sorted-queue for subtokenize jumps (needs an ordering invariant), caching
 `combineExtensions(defaultConstructs)` for extension-less parses (helps `micromark()` without
-extensions, not nebula).
+extensions, not the chat app path).
 
 ## Continuation (experiments 10 to 16, budget extended by the user)
 
@@ -251,11 +251,11 @@ Remaining superlinear: GFM strikethrough 7.8x (other repo), and the attention wa
 | spec-tokens | -21.65% | -22.24% |
 | readme-html | -6.14% | -7.60% |
 | pathological-html | -6.64% | -8.60% |
-| chat-mdast-gfm (nebula) | -4.09% | -4.05% |
+| chat-mdast-gfm (chat app) | -4.09% | -4.05% |
 | chat-tokens-gfm | -4.20% | -4.26% |
 | chat-html-gfm | -5.80% | -6.80% |
 | chat-html-commonmark | -6.40% | -6.82% |
-| stream-mdast-gfm (nebula) | -3.76% | -2.94% |
+| stream-mdast-gfm (chat app) | -3.76% | -2.94% |
 | **TOTAL** | **-7.04%** | **-7.50%** |
 | **GEOMEAN** | **-8.94%** | **-9.64%** |
 
